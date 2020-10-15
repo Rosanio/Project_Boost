@@ -13,6 +13,7 @@ public class Rocket : MonoBehaviour
     [SerializeField] ParticleSystem thrustParticles = null;
     [SerializeField] ParticleSystem deathParticles = null;
     [SerializeField] ParticleSystem levelCompleteParticles = null;
+    [SerializeField] float levelLoadDelay = 1f;
 
     new Rigidbody rigidbody;
     AudioSource audioSource;
@@ -65,18 +66,18 @@ public class Rocket : MonoBehaviour
         thrustParticles.Stop();
         audioSource.PlayOneShot(levelCompleteSound);
         levelCompleteParticles.Play();
-        Invoke(nameof(LoadNextScene), 1f);
+        Invoke(nameof(LoadNextScene), levelLoadDelay);
     }
 
     private void LevelFailed()
     {
-        currentLevelIndex = 0;
+        currentLevelIndex -= 1;
         state = State.Dying;
         audioSource.Stop();
         thrustParticles.Stop();
         audioSource.PlayOneShot(deathSound);
         deathParticles.Play();
-        Invoke(nameof(LoadNextScene), 1f);
+        Invoke(nameof(LoadNextScene), levelLoadDelay);
     }
 
     private void LoadNextScene()
