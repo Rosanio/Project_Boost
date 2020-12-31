@@ -1,5 +1,4 @@
-﻿using Packages.Rider.Editor.UnitTesting;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
@@ -22,13 +21,14 @@ public class Rocket : MonoBehaviour
     State state = State.Alive;
 
     private int currentLevelIndex;
+    private bool collisionDetectionActive = true;
 
     void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
 
-        currentLevelIndex = 0;
+        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
     }
 
     // Update is called once per frame
@@ -39,11 +39,15 @@ public class Rocket : MonoBehaviour
             Thrust();
             Rotate();
         }
+        if (Debug.isDebugBuild)
+        {
+            ProcessDebugKeys();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) return;
+        if (state != State.Alive || !collisionDetectionActive) return;
 
         switch(collision.gameObject.tag)
         {
@@ -60,7 +64,7 @@ public class Rocket : MonoBehaviour
 
     private void LevelCompleted()
     {
-        currentLevelIndex += 1;
+        currentLevelIndex = GetNextLevelIndex();
         state = State.Transcending;
         audioSource.Stop();
         thrustParticles.Stop();
@@ -69,9 +73,14 @@ public class Rocket : MonoBehaviour
         Invoke(nameof(LoadNextScene), levelLoadDelay);
     }
 
+    private int GetNextLevelIndex()
+    {
+        return currentLevelIndex == SceneManager.sceneCountInBuildSettings - 1 ? 0 : currentLevelIndex + 1;
+    }
+
     private void LevelFailed()
     {
-        currentLevelIndex -= 1;
+        currentLevelIndex = currentLevelIndex == 0 ? 0 : currentLevelIndex - 1;
         state = State.Dying;
         audioSource.Stop();
         thrustParticles.Stop();
@@ -129,5 +138,18 @@ public class Rocket : MonoBehaviour
 
         // Resume physics rotation
         rigidbody.freezeRotation = false;
+    }
+
+    private void ProcessDebugKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            currentLevelIndex = GetNextLevelIndex();
+            LoadNextScene();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionDetectionActive = !collisionDetectionActive;
+        }
     }
 }

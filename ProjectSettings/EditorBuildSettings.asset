@@ -6,9 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Level_1.unity
+    path: Assets/Levels/Short_Gaps.unity
     guid: 6591dab2d43ffd143ab1914d0ec7627f
   - enabled: 1
-    path: Assets/Level_2.unity
+    path: Assets/Levels/Long_Gaps.unity
     guid: 5975cffba482ed044b6a215b3eb033a8
+  - enabled: 1
+    path: Assets/Levels/Moving_Gaps.unity
+    guid: c580bfda32eabcb4baa8edc02563e97a
+  - enabled: 1
+    path: Assets/Levels/Diagonal_Gaps.unity
+    guid: 416e4b889b7d5fe4ca9a8e9c5de6d8a6
+  - enabled: 1
+    path: Assets/Levels/Rotating_Gaps.unity
+    guid: 6666ff24faccc17419b943e3dfb981fb
   m_configObjects: {}
